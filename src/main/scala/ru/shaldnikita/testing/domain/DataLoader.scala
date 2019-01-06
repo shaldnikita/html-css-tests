@@ -1,7 +1,7 @@
-package ru.shaldnikita.testing.data
+package ru.shaldnikita.testing.domain
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import ru.shaldnikita.testing.data.entities.Question
+import ru.shaldnikita.testing.domain.entities.Question
 import spray.json.{DefaultJsonProtocol, _}
 
 import scala.io.Source._
@@ -27,7 +27,7 @@ object DataLoader extends QuestionFormatSupport {
   }
 }
 
-private trait QuestionFormatSupport extends SprayJsonSupport with DefaultJsonProtocol {
+trait QuestionFormatSupport extends SprayJsonSupport with DefaultJsonProtocol {
   private val questionApply: (String, String, List[String]) => Question = Question.apply
   implicit val questionFormat: RootJsonFormat[Question] = jsonFormat3(questionApply)
 }

@@ -1,4 +1,4 @@
-package ru.shaldnikita.testing.data.entities
+package ru.shaldnikita.testing.domain.entities
 
 case class Test(questions: List[Question], timer: Timer) {
   def start(): Unit = {

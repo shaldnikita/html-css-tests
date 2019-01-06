@@ -1,4 +1,4 @@
-package ru.shaldnikita.testing.data.entities
+package ru.shaldnikita.testing.domain.entities
 
 case class TestResult(questionResults: Iterable[QuestionResult]) {
   def answers = questionResults.map(_.answer)

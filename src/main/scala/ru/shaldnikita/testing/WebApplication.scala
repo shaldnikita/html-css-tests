@@ -12,5 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 class WebApplication
 
 object WebApplication extends App {
-  SpringApplication.run(classOf[WebApplication]);
+  SpringApplication.run(classOf[WebApplication])
+
+
 }

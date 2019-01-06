@@ -3,7 +3,7 @@ package ru.shaldnikita.testing.web.question
 import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup
-import ru.shaldnikita.testing.data.entities.Question
+import ru.shaldnikita.testing.domain.entities.Question
 
 import scala.collection.JavaConverters._
 

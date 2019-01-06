@@ -2,6 +2,7 @@ package ru.shaldnikita.testing.web.mainscreen
 
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
+import javax.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
@@ -14,25 +15,36 @@ import ru.shaldnikita.testing.web.question.QuestionForm
 @Component
 @Scope("prototype")
 class MainScreen(@Autowired mainScreenPresenter: MainScreenPresenter) extends VerticalLayout {
-  mainScreenPresenter.init(this)
 
   protected[web] var currentQuestionForm: QuestionForm = _
 
   private val prevButton = new Button("Назад")
   prevButton.addClickListener(_ => mainScreenPresenter.prevButtonClicked())
+
   private val nextButton = new Button("Вперед")
   nextButton.addClickListener(_ => mainScreenPresenter.nextButtonClicked())
+
   private val finishButton = new Button("Завершить")
   finishButton.addClickListener(_ => mainScreenPresenter.finish())
+
   private val buttons = new HorizontalLayout(prevButton, nextButton)
 
+  add(new VerticalLayout(buttons, finishButton))
   if (currentQuestionForm != null)
-    add(currentQuestionForm, new VerticalLayout(buttons, finishButton))
+    addComponentAsFirst(currentQuestionForm)
+
+  @PostConstruct
+  def afterPropertiesSet(): Unit = {
+    mainScreenPresenter.init(this)
+  }
 
 
   protected[web] def replaceQuestionForm(newQuestionForm: QuestionForm): Unit = {
-    if (currentQuestionForm != null)
+    if (currentQuestionForm != null) {
       replace(currentQuestionForm, newQuestionForm)
+    } else {
+      addComponentAsFirst(newQuestionForm)
+    }
     currentQuestionForm = newQuestionForm
   }
 

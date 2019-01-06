@@ -1,11 +1,13 @@
 package ru.shaldnikita.testing.web.result
 
-import com.vaadin.flow.component.dependency.{HtmlImport, StyleSheet}
+
+import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.html.Label
-import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 import com.vaadin.flow.data.renderer.TemplateRenderer
-import ru.shaldnikita.testing.data.entities.{AnswerPair, TestResult}
+import com.vaadin.flow.server.VaadinSession
+import ru.shaldnikita.testing.domain.entities.{AnswerPair, TestResult}
 
 import scala.collection.JavaConverters._
 
@@ -34,12 +36,18 @@ class ResultForm(result: TestResult) extends VerticalLayout {
   resultGrid.addColumn(TemplateRenderer.of("<div class$=\"[[item.class]]\">[[item.correctAnswer]]</div>")
     .withProperty("class", cssClassProvider)
     .withProperty("correctAnswer", pair => pair.correctAnswer))
-    .setHeader("Верный ответ");
+    .setHeader("Верный ответ")
 
   resultGrid.setItems(result.results.asJavaCollection)
 
   val correctAnswersCount = new Label("Верных ответов: " + result.correctAnswers.size)
 
-  add(correctAnswersCount, resultGrid)
-}
+  val restartButton = new Button("Попробовать еще раз")
+  restartButton.addClickListener(e => {
+    //todo убрать
+    VaadinSession.getCurrent.close()
+    restartButton.click()
+  })
 
+  add(new HorizontalLayout(correctAnswersCount, restartButton), resultGrid)
+}

@@ -1,9 +1,10 @@
 package ru.shaldnikita.testing.web.mainscreen
 
-import com.vaadin.flow.spring.annotation.VaadinSessionScope
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import ru.shaldnikita.testing.data.DataLoader
-import ru.shaldnikita.testing.data.entities.{QuestionResult, TestResult}
+import ru.shaldnikita.testing.domain.entities.TestResult
+import ru.shaldnikita.testing.web.State
 import ru.shaldnikita.testing.web.question.QuestionForm
 import ru.shaldnikita.testing.web.result.ResultForm
 
@@ -12,55 +13,48 @@ import ru.shaldnikita.testing.web.result.ResultForm
   *
   */
 @Component
-@VaadinSessionScope
-class MainScreenPresenter {
+@Scope("prototype")
+class MainScreenPresenter(@Autowired private val state: State) {
   private var mainScreen: MainScreen = _
-  private val questions = DataLoader.getRandom10Questions.map(question =>
-    (question, Option.empty[String])).toArray
-  private var curIndex = 0
-  private var finished = false
 
-  def finish() = {
-    saveCurrentQuestionFormState()
-    this.mainScreen.removeAll()
-    this.mainScreen.add(new ResultForm(TestResult(
-      questions.filter(_._2.isDefined).map(qa => QuestionResult(qa._1, qa._2.get)))
-    ))
-    finished = true
-  }
-
-  protected[web] def prevButtonClicked(): Unit = {
-    saveCurrentQuestionFormState()
-    val newIndex = if (curIndex == 0) 9 else curIndex - 1
-    replaceQuestion(newIndex)
-  }
-
-  protected[web] def nextButtonClicked(): Unit = {
-    saveCurrentQuestionFormState()
-    val newIndex = if (curIndex == 9) 0 else curIndex + 1
-    replaceQuestion(newIndex)
-  }
-
-  protected[web] def init(mainScreen: MainScreen): Unit = {
+  def init(mainScreen: MainScreen): Unit = {
     this.mainScreen = mainScreen
-    if (finished) {
+    if (state.finished) {
       finish()
       return
     }
-    this.mainScreen.replaceQuestionForm(new QuestionForm(questions(curIndex)._1))
+    this.mainScreen.replaceQuestionForm(new QuestionForm(state.currentQuestion))
+  }
+
+  def finish(): Unit = {
+    saveCurrentQuestionFormState()
+    this.mainScreen.removeAll()
+    this.mainScreen.add(new ResultForm(TestResult(state.results)))
+    state.finish()
   }
 
   private def saveCurrentQuestionFormState(): Unit = {
     mainScreen.getCurrentQuestionForm.foreach(form => {
-      val curQuestion = questions(curIndex)._1
-      questions(curIndex) = (curQuestion, form.currentAnswer)
+      state.saveCurrentQuestion(form.currentAnswer)
     })
   }
 
-  private def replaceQuestion(index: Int): Unit = {
-    val newQuestion = questions(index)
-    mainScreen.replaceQuestionForm(new QuestionForm(newQuestion._1, newQuestion._2))
-    curIndex = index
+  def restart(): Unit = {
+    state.reset()
+    this.mainScreen.removeAll()
+    this.mainScreen.replaceQuestionForm(new QuestionForm(state.currentQuestion))
+  }
+
+  protected[web] def prevButtonClicked(): Unit = {
+    saveCurrentQuestionFormState()
+    val prevQuestion = state.prevQuestion
+    mainScreen.replaceQuestionForm(new QuestionForm(prevQuestion._1, prevQuestion._2))
+  }
+
+  protected[web] def nextButtonClicked(): Unit = {
+    saveCurrentQuestionFormState()
+    val nextQuestion = state.nextQuestion
+    mainScreen.replaceQuestionForm(new QuestionForm(nextQuestion._1, nextQuestion._2))
   }
 
 }

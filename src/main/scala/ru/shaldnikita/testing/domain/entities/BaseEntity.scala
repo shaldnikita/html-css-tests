@@ -1,4 +1,4 @@
-package ru.shaldnikita.testing.data.entities
+package ru.shaldnikita.testing.domain.entities
 
 import java.time.LocalDateTime
 
