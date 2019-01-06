@@ -13,6 +13,4 @@ class WebApplication
 
 object WebApplication extends App {
   SpringApplication.run(classOf[WebApplication])
-
-
 }

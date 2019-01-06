@@ -1,18 +1,17 @@
 package ru.shaldnikita.testing.domain.entities
 
-case class TestResult(questionResults: Iterable[QuestionResult]) {
-  def answers = questionResults.map(_.answer)
+import ru.shaldnikita.testing.web.Question
 
-  def correctAnswers = questionResults.filter(qr => qr.answer == qr.question.correctAnswer)
+case class TestResult(questionResults: Iterable[Question]) {
+  def answers: Iterable[Option[String]] = questionResults.map(_.answer)
 
-  def wrongAnswers = questionResults.filter(qr => qr.answer != qr.question.correctAnswer)
+  def correctAnswers: Iterable[Question] = questionResults.filter(qr => qr.answer.getOrElse("") == qr.questionData.correctAnswer)
 
-  def results = questionResults.map(result => AnswerPair(result.answer, result.question.correctAnswer))
+  def wrongAnswers: Iterable[Question] = questionResults.filter(qr => qr.answer.getOrElse("") != qr.questionData.correctAnswer)
+
+  def results: Iterable[AnswerPair] = questionResults.map(result => AnswerPair(result.answer.getOrElse(""), result.questionData.correctAnswer))
 
 
 }
-
-
-case class QuestionResult(question: Question, answer: String)
 
 case class AnswerPair(answer: String, correctAnswer: String)

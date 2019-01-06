@@ -8,5 +8,4 @@ case class Student(id: Long = 0,
                    updatedDate: LocalDateTime,
                    firstName: String,
                    secondName: String,
-                   results: List[QuestionResult],
                    lastLogin: LocalDateTime) extends BaseEntity
