@@ -1,8 +1,11 @@
-package ru.shaldnikita.web.ui
+package ru.shaldnikita.testing.web.mainscreen
 
 import com.vaadin.flow.spring.annotation.VaadinSessionScope
 import org.springframework.stereotype.Component
-import ru.shaldnikita.web.DataLoader
+import ru.shaldnikita.testing.data.DataLoader
+import ru.shaldnikita.testing.data.entities.{QuestionResult, TestResult}
+import ru.shaldnikita.testing.web.question.QuestionForm
+import ru.shaldnikita.testing.web.result.ResultForm
 
 /**
   * @author n.shaldenkov on 03.01.2019
@@ -20,27 +23,27 @@ class MainScreenPresenter {
   def finish() = {
     saveCurrentQuestionFormState()
     this.mainScreen.removeAll()
-    this.mainScreen.add(new ResultForm(
-      questions.filter(_._2.isDefined).map(qa => (qa._1, qa._2.get))
+    this.mainScreen.add(new ResultForm(TestResult(
+      questions.filter(_._2.isDefined).map(qa => QuestionResult(qa._1, qa._2.get)))
     ))
     finished = true
   }
 
-  protected[ui] def prevButtonClicked(): Unit = {
+  protected[web] def prevButtonClicked(): Unit = {
     saveCurrentQuestionFormState()
     val newIndex = if (curIndex == 0) 9 else curIndex - 1
     replaceQuestion(newIndex)
   }
 
-  protected[ui] def nextButtonClicked(): Unit = {
+  protected[web] def nextButtonClicked(): Unit = {
     saveCurrentQuestionFormState()
     val newIndex = if (curIndex == 9) 0 else curIndex + 1
     replaceQuestion(newIndex)
   }
 
-  protected[ui] def init(mainScreen: MainScreen): Unit = {
+  protected[web] def init(mainScreen: MainScreen): Unit = {
     this.mainScreen = mainScreen
-    if(finished){
+    if (finished) {
       finish()
       return
     }
@@ -48,7 +51,7 @@ class MainScreenPresenter {
   }
 
   private def saveCurrentQuestionFormState(): Unit = {
-    mainScreen.getCurrentQuestionForm().foreach(form => {
+    mainScreen.getCurrentQuestionForm.foreach(form => {
       val curQuestion = questions(curIndex)._1
       questions(curIndex) = (curQuestion, form.currentAnswer)
     })

@@ -1,9 +1,9 @@
-package ru.shaldnikita.web.ui
+package ru.shaldnikita.testing.web.question
 
 import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup
-import ru.shaldnikita.web.pojo.Question
+import ru.shaldnikita.testing.data.entities.Question
 
 import scala.collection.JavaConverters._
 
@@ -25,7 +25,7 @@ class QuestionForm(question: Question, selectedAnswer: Option[String] = None)
 
   add(questionLabel, answersRadioButton)
 
-  protected[ui] def currentAnswer: Option[String] = {
+  protected[web] def currentAnswer: Option[String] = {
     Option(answersRadioButton.getValue)
   }
 }

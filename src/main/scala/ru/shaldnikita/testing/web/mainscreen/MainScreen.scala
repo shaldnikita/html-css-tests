@@ -1,10 +1,11 @@
-package ru.shaldnikita.web.ui
+package ru.shaldnikita.testing.web.mainscreen
 
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
+import ru.shaldnikita.testing.web.question.QuestionForm
 
 /**
   * @author n.shaldenkov on 03.01.2019
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component
 class MainScreen(@Autowired mainScreenPresenter: MainScreenPresenter) extends VerticalLayout {
   mainScreenPresenter.init(this)
 
-  protected[ui] var currentQuestionForm: QuestionForm = _
+  protected[web] var currentQuestionForm: QuestionForm = _
 
   private val prevButton = new Button("Назад")
   prevButton.addClickListener(_ => mainScreenPresenter.prevButtonClicked())
@@ -28,13 +29,14 @@ class MainScreen(@Autowired mainScreenPresenter: MainScreenPresenter) extends Ve
   if (currentQuestionForm != null)
     add(currentQuestionForm, new VerticalLayout(buttons, finishButton))
 
-  protected[ui] def replaceQuestionForm(newQuestionForm: QuestionForm) = {
+
+  protected[web] def replaceQuestionForm(newQuestionForm: QuestionForm): Unit = {
     if (currentQuestionForm != null)
       replace(currentQuestionForm, newQuestionForm)
     currentQuestionForm = newQuestionForm
   }
 
-  protected[ui] def getCurrentQuestionForm(): Option[QuestionForm] ={
+  protected[web] def getCurrentQuestionForm: Option[QuestionForm] = {
     Option(currentQuestionForm)
   }
 }
