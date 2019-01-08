@@ -1,6 +1,7 @@
 package ru.shaldnikita.testing.web
 
 import com.vaadin.flow.component.html.Div
+import com.vaadin.flow.component.page.Push
 import com.vaadin.flow.router.Route
 import org.springframework.beans.factory.annotation.Autowired
 import ru.shaldnikita.testing.web.mainscreen.MainScreen
@@ -10,6 +11,7 @@ import ru.shaldnikita.testing.web.mainscreen.MainScreen
   *
   */
 @Route("")
+@Push
 class Router(@Autowired mainScreen: MainScreen) extends Div {
   setSizeFull()
   add(mainScreen)

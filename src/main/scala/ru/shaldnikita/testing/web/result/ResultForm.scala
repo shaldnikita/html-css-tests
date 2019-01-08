@@ -7,7 +7,7 @@ import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 import com.vaadin.flow.data.renderer.TemplateRenderer
 import com.vaadin.flow.server.VaadinSession
-import ru.shaldnikita.testing.domain.entities.{AnswerPair, TestResult}
+import ru.shaldnikita.testing.domain.entities.{AnswersPair, TestResult}
 
 import scala.collection.JavaConverters._
 
@@ -19,14 +19,14 @@ class ResultForm(result: TestResult) extends VerticalLayout {
 
   import com.vaadin.flow.function.ValueProvider
 
-  val cssClassProvider: ValueProvider[AnswerPair, String] = { pair =>
+  val cssClassProvider: ValueProvider[AnswersPair, String] = { pair =>
     var cssClass = "final-results-grid-cell"
     if (pair.answer == pair.correctAnswer) cssClass += "correct-answer"
     else cssClass += " wrong-answer"
     cssClass
   }
 
-  val resultGrid = new Grid[AnswerPair]()
+  val resultGrid = new Grid[AnswersPair]()
 
   resultGrid.addColumn(TemplateRenderer.of("<div class$=\"[[item.class]]\">[[item.answer]]</div>")
     .withProperty("class", cssClassProvider)

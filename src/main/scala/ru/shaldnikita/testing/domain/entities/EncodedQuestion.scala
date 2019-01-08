@@ -7,9 +7,9 @@ import org.apache.commons.codec.binary.Base64
   *
   */
 object EncodedQuestion {
-  def apply(question: String, correctAnswer: String, answers: List[String]): QuestionData = {
-    val encodedCorrectAnswer = new String(Base64.decodeBase64(correctAnswer))
-    QuestionData(question, encodedCorrectAnswer, answers)
+  def apply(questionText: String, encodedCorrectAnswer: String, answers: List[String]): QuestionData = {
+    val decodedCorrectAnswer = new String(Base64.decodeBase64(encodedCorrectAnswer))
+    QuestionData(questionText, decodedCorrectAnswer, answers)
   }
 }
 

@@ -1,5 +1,3 @@
 package ru.shaldnikita.testing.akka.messages
 
-class Start {
-
-}
+case object Start

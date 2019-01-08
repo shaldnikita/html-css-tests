@@ -1,3 +1,3 @@
 package ru.shaldnikita.testing.akka.messages
 
-case class Results()
+case object Results

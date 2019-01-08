@@ -1,5 +1,6 @@
 package ru.shaldnikita.testing.web.mainscreen
 
+import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 import javax.annotation.PostConstruct
@@ -16,7 +17,7 @@ import ru.shaldnikita.testing.web.question.QuestionForm
 @Scope("prototype")
 class MainScreen(@Autowired mainScreenPresenter: MainScreenPresenter) extends VerticalLayout {
 
-  protected[web] var currentQuestionForm: QuestionForm = _
+  private var currentQuestionForm: QuestionForm = _
 
   private val prevButton = new Button("Назад")
   prevButton.addClickListener(_ => mainScreenPresenter.prevButtonClicked())
@@ -35,20 +36,18 @@ class MainScreen(@Autowired mainScreenPresenter: MainScreenPresenter) extends Ve
 
   @PostConstruct
   def afterPropertiesSet(): Unit = {
-    mainScreenPresenter.init(this)
+    mainScreenPresenter.init(this, UI.getCurrent)
   }
 
-
   protected[web] def replaceQuestionForm(newQuestionForm: QuestionForm): Unit = {
-    if (currentQuestionForm != null) {
+    if (currentQuestionForm != null)
       replace(currentQuestionForm, newQuestionForm)
-    } else {
+    else
       addComponentAsFirst(newQuestionForm)
-    }
     currentQuestionForm = newQuestionForm
   }
 
-  protected[web] def getCurrentQuestionForm: Option[QuestionForm] = {
-    Option(currentQuestionForm)
+  protected[web] def getCurrentAnswer: Option[String] = {
+    Option(currentQuestionForm).flatMap(_.currentAnswer)
   }
 }

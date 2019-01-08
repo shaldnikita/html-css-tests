@@ -1,34 +1,48 @@
 package ru.shaldnikita.testing.web
 
 import akka.actor.{Actor, ActorLogging}
-import org.springframework.context.annotation.Scope
-import org.springframework.stereotype.Component
 import ru.shaldnikita.testing.akka.messages._
 import ru.shaldnikita.testing.domain.DataLoader
 
-@Component
-@Scope("prototype")
 class TestStateActor extends Actor with ActorLogging {
-  var questions: Array[Question] = random10Questions
-  var curIndex = 0
-  var finished = false
+  var questions: Array[Question] = _
+  var curIndex: Int = _
+  var finished: Boolean = _
 
   override def receive: PartialFunction[Any, Unit] = {
-    case _: Finish => finish()
-    case _: Restart => reset()
-    case _: Results => sender() ! results
-    case _: CurrentQuestion => sender() ! currentQuestion
-    case _: PrevQuestion => sender() ! prevQuestion
-    case _: NextQuestion => sender() ! nextQuestion
+    case Start =>
+      log.info("Start")
+      init()
+    case Finish =>
+      log.info("Finish")
+      finish()
+    case Restart =>
+      log.info("Restart")
+      init()
+
+    case Results => sender() ! results
+    case IsFinished => sender() ! finished
+
+    case answer: SaveCurrentQuestionState => saveCurrentQuestion(answer.answer)
+
+    case CurrentQuestion => sender() ! currentQuestion
+    case PrevQuestion => sender() ! prevQuestion
+    case NextQuestion => sender() ! nextQuestion
 
     case _ => log.warning("Wrong message")
+  }
+
+
+  override def postStop(): Unit = {
+    log.info("STOP")
+    super.postStop()
   }
 
   private def finish(): Unit = {
     finished = true
   }
 
-  private def reset(): Unit = {
+  private def init(): Unit = {
     finished = false
     curIndex = 0
     questions = random10Questions
@@ -63,10 +77,8 @@ class TestStateActor extends Actor with ActorLogging {
     questions(newIndex)
   }
 
-  private def saveCurrentQuestion(answer: Option[String]): Unit = {
-    answer.foreach(currentAnswer => {
-      val curQuestion = questions(curIndex).questionData
-      questions(curIndex) = Question(curQuestion, Some(currentAnswer))
-    })
+  private def saveCurrentQuestion(currentAnswer: String): Unit = {
+    val curQuestion = questions(curIndex).questionData
+    questions(curIndex) = Question(curQuestion, Some(currentAnswer))
   }
 }

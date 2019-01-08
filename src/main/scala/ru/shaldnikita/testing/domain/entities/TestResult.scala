@@ -9,9 +9,9 @@ case class TestResult(questionResults: Iterable[Question]) {
 
   def wrongAnswers: Iterable[Question] = questionResults.filter(qr => qr.answer.getOrElse("") != qr.questionData.correctAnswer)
 
-  def results: Iterable[AnswerPair] = questionResults.map(result => AnswerPair(result.answer.getOrElse(""), result.questionData.correctAnswer))
+  def results: Iterable[AnswersPair] = questionResults.map(result => AnswersPair(result.answer.getOrElse(""), result.questionData.correctAnswer))
 
 
 }
 
-case class AnswerPair(answer: String, correctAnswer: String)
+case class AnswersPair(answer: String, correctAnswer: String)
